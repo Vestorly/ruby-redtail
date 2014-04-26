@@ -1,13 +1,14 @@
 module RubyRedtail
   class Contact
     class Accounts
-      def initialize(contact_id, api_hash)
+      def initialize(contact_id, api_hash, config)
         @api_hash = api_hash
         @contact_id = contact_id
+        @config = config
       end
 
       def fetch
-        RubyRedtail::Query.run("contacts/#{@contact_id}/accounts", @api_hash, "GET")
+        RubyRedtail::Query.new(@api_hash, @config).get("contacts/#{@contact_id}/accounts", @api_hash)
       end
 
       def create (params)
@@ -15,11 +16,11 @@ module RubyRedtail
       end
 
       def update (account_id, params)
-        RubyRedtail::Query.run("contacts/#{contact_id}/accounts/#{account_id}", @api_hash, 'PUT', params)
+        RubyRedtail::Query.new(@api_hash, @config).put("contacts/#{contact_id}/accounts/#{account_id}", params)
       end
 
       def assets (account_id)
-        RubyRedtail::Query.run("contacts/#{contact_id}/#{account_id}/assets", @api_hash, "GET")
+        RubyRedtail::Query.new(@api_hash, @config).get("contacts/#{contact_id}/#{account_id}/assets")
       end
     end
   end

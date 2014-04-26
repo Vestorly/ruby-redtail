@@ -1,9 +1,9 @@
-require 'helper'
+require_relative 'helper'
 
 class UserSettingsTest < Test::Unit::TestCase
   def setup
     setup_redtail
-    @user = RubyRedtail::User.new('UserKey',@redtail_user_key)
+    @user = RubyRedtail::User.new(RubyRedtail.config, 'UserKey',@redtail_user_key)
   end
   
   should "be able to fetch user activitytypes" do

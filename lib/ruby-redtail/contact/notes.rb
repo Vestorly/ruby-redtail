@@ -1,17 +1,18 @@
 module RubyRedtail
   class Notes
-    def initialize (api_hash)
+    def initialize(api_hash, config)
       @api_hash = api_hash
+      @config = config
     end
 
     # Fetch Notes By Contact Id
     def fetch (contact_id, page = 1)
-      RubyRedtail::Query.run("contacts/#{contact_id}/notes?page=#{page}", @api_hash, "GET")
+      RubyRedtail::Query.new(@api_hash, @config).get("contacts/#{contact_id}/notes?page=#{page}")
     end
 
     # Update Note
     def update (contact_id, note_id, params)
-      RubyRedtail::Query.run("contacts/#{contact_id}/notes/#{note_id}", @api_hash, 'PUT', params)
+      RubyRedtail::Query.new(@api_hash, @config).put("contacts/#{contact_id}/notes/#{note_id}", params)
     end
 
     # Create New Note
@@ -21,7 +22,7 @@ module RubyRedtail
 
     # Fetch Recently Added Notes
     def recent
-      RubyRedtail::Query.run("contacts/notes/recent", @api_hash, 'GET')
+      RubyRedtail::Query.new(@api_hash, @config).get("contacts/notes/recent")
     end
   end
 end

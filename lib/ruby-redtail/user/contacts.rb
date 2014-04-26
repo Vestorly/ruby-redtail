@@ -7,8 +7,9 @@ module RubyRedtail
       CONTACT_SEARCH_FIELDS = ['LastUpdate','Name','RecAdd','PhoneNumber','Tag_Group','FirstName','LastName','FamilyName','FamilyHead','ClientStatus','ContactType','ClientSource','TaxId']
       CONTACT_SEARCH_OPERANDS = ['=','>','<','!=','Like','BeginsWith','IsEmpty']
 
-      def initialize(api_hash)
+      def initialize(api_hash, config)
         @api_hash = api_hash
+        @config = config
       end
 
       # Contact Search by Name Fetch
@@ -16,7 +17,12 @@ module RubyRedtail
       # The searched value is based on a contact's or contacts' name.
       # http://help.redtailtechnology.com/entries/21937828-contacts-search-contacts-search#Get
       def search_by_name (value, page = 1)
-        build_contacts_array RubyRedtail::Query.run("contacts/search?value=#{value}&page=#{page}", @api_hash, "GET")["Contacts"]
+        build_contacts_array RubyRedtail::Query.new(@api_hash, @config).get("contacts/search?value=#{value}&page=#{page}")["Contacts"]
+      end
+
+      # http://help.redtailtechnology.com/entries/21937828-contacts-search-contacts-search#LGet
+      def search_by_letter(value, page = 1)
+        build_contacts_array RubyRedtail::Query.new(@api_hash, @config).get("contacts/search/beginswith?value=#{value}&page=#{page}")["Contacts"]
       end
 
       # TODO: Test this properly
@@ -28,7 +34,7 @@ module RubyRedtail
           body[i]["Operand"] = CONTACT_SEARCH_OPERANDS.index expr[1]
           body[i]["Value"] = expr[2]
         end
-        build_contacts_array RubyRedtail::Query.run("contacts/search?page=#{page}", @api_hash, "POST", body)
+        build_contacts_array RubyRedtail::Query.new(@api_hash, @config).post("contacts/search?page=#{page}", body)
       end
       
       # Create New Contact
@@ -39,7 +45,7 @@ module RubyRedtail
       protected
       
       def build_contact contact_hash
-        RubyRedtail::Contact.new(contact_hash,@api_hash)
+        RubyRedtail::Contact.new(contact_hash, @api_hash, @config)
       end
 
       def build_contacts_array contact_hashes

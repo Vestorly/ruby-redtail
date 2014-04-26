@@ -1,20 +1,26 @@
 module RubyRedtail
   class Query
-    # TODO: Refactor (Lots of repetition)
-    def self.run (uri, auth_hash, method, request_body = nil)
-      base_uri = RubyRedtail.config.api_uri
-      if method == "GET" || method == "POST"
-        @response = HTTParty.get(base_uri + uri, :headers => {"Authorization" => auth_hash, 'Content-Type' => 'text/json'}).parsed_response
-      elsif method == "POST"
-        @response = HTTParty.post(base_uri + uri, :headers => {"Authorization" => auth_hash, 'Content-Type' => 'text/json'}, :body => request_body.to_json).parsed_response
-      elsif method == "PUT"
-        @response = HTTParty.put(base_uri + uri, :headers => {"Authorization" => auth_hash, 'Content-Type' => 'text/json'}, :body => request_body.to_json).parsed_response
-      elsif method == "DELETE"
-        @response = HTTParty.post(base_uri + uri, :headers => {"Authorization" => auth_hash, 'Content-Type' => 'text/json'}, :body => "").parsed_response
-      end
-
-      return @response
+    def initialize(api_hash, config)
+      @base_uri = config.api_uri
+      @api_hash = api_hash
     end
+
+    def get(uri)
+      HTTParty.get(@base_uri + uri, :headers => {"Authorization" => @api_hash, 'Content-Type' => 'text/json'}).parsed_response
+    end
+
+    def post(uri, request_body=nil)
+      HTTParty.post(@base_uri + uri, :headers => {"Authorization" => @api_hash, 'Content-Type' => 'text/json'}, :body => request_body.to_json).parsed_response
+    end
+
+    def put(uri, request_body=nil)
+      HTTParty.put(@base_uri + uri, :headers => {"Authorization" => @api_hash, 'Content-Type' => 'text/json'}, :body => request_body.to_json).parsed_response
+    end
+
+    def delete(uri)
+      HTTParty.post(@base_uri + uri, :headers => {"Authorization" => @api_hash, 'Content-Type' => 'text/json'}).parsed_response
+    end
+
   end
 end
 

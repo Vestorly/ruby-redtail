@@ -1,4 +1,4 @@
-require 'helper'
+require_relative 'helper'
 
 class UserTest < Test::Unit::TestCase
   def setup
@@ -6,7 +6,7 @@ class UserTest < Test::Unit::TestCase
   end
   
   should "be able to fetch UserKey via Basic authentication" do
-    user = RubyRedtail::User.new('Basic', @redtail_user_name, @redtail_user_password)
+    user = RubyRedtail::User.new(RubyRedtail.config, 'Basic', @redtail_user_name, @redtail_user_password)
     authentication = user.authentication
     assert_equal("Success", authentication.message)
     assert_equal(41974, authentication.user_id)
@@ -14,12 +14,12 @@ class UserTest < Test::Unit::TestCase
   end
   
   should "be able to fetch user data via Basic authentication" do
-    user = RubyRedtail::User.new('Basic', @redtail_user_name, @redtail_user_password)
+    user = RubyRedtail::User.new(RubyRedtail.config, 'Basic', @redtail_user_name, @redtail_user_password)
     assert_nothing_raised(RubyRedtail::AuthenticationError) {taggroups = user.settings.taggroups }
   end
   
   should "be able to fetch user data via UserKey authentication" do
-    user = RubyRedtail::User.new('UserKey', @redtail_user_key)
+    user = RubyRedtail::User.new(RubyRedtail.config, 'UserKey', @redtail_user_key)
     assert_nothing_raised(RubyRedtail::AuthenticationError) {taggroups = user.settings.taggroups }
   end
   
@@ -30,13 +30,13 @@ class UserTest < Test::Unit::TestCase
   end
   
   should "be able to fetch user data via Basic authentication block" do
-    RubyRedtail::User.authenticate_via_basic(@redtail_user_name, @redtail_user_password) do |user|
+    RubyRedtail::User.authenticate_via_basic(@redtail_user_name, @redtail_user_password, RubyRedtail.config) do |user|
       assert_nothing_raised(RubyRedtail::AuthenticationError) {taggroups = user.settings.taggroups }
     end
   end
   
   should "be able to fetch user data via UserKey authentication block" do
-    RubyRedtail::User.authenticate_via_user_key(@redtail_user_key) do |user|
+    RubyRedtail::User.authenticate_via_user_key(@redtail_user_key, RubyRedtail.config) do |user|
       assert_nothing_raised(RubyRedtail::AuthenticationError) {taggroups = user.settings.taggroups }
     end
   end
@@ -49,17 +49,17 @@ class UserTest < Test::Unit::TestCase
   end
   
   should "not be able to fetch user data via faulty Basic authentication" do
-    user = RubyRedtail::User.new('Basic', @redtail_user_name, 'hacker_hackity_hack')
+    user = RubyRedtail::User.new(RubyRedtail.config, 'Basic', @redtail_user_name, 'hacker_hackity_hack')
     assert_raise(RubyRedtail::AuthenticationError) {taggroups = user.settings.taggroups }
   end
   
   should "not be able to fetch user data via faulty UserKey authentication" do
-    user = RubyRedtail::User.new('UserKey', 'hacker_hackity_hack')
+    user = RubyRedtail::User.new(RubyRedtail.config, 'UserKey', 'hacker_hackity_hack')
     assert_raise(RubyRedtail::AuthenticationError) {taggroups = user.settings.taggroups }
   end
   
   should "not be able to fetch user data via faulty UserToken authentication" do
-    user = RubyRedtail::User.new('UserToken', 'hacker_hackity_hack')
+    user = RubyRedtail::User.new(RubyRedtail.config, 'UserToken', 'hacker_hackity_hack')
     assert_raise(RubyRedtail::AuthenticationError) {taggroups = user.settings.taggroups }
   end
   

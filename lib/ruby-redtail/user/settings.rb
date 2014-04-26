@@ -4,38 +4,39 @@ module RubyRedtail
   class User
     class Settings
 
-      def initialize api_hash
+      def initialize(api_hash, config)
         @api_hash = api_hash
+        @config = config
       end
     
       # Activity Type List Fetch
       # returns a list of activity types with the corresponding Activity Code
       def activitytypes
-        build_settings_array RubyRedtail::Query.run("settings/activitytypes", @api_hash, "GET")
+        build_settings_array RubyRedtail::Query.new(@api_hash, @config).get("settings/activitytypes" )
       end
     
       # Master Category List Fetch
       # returns a Master Category List with the corresponding MCL Code.
       def mcl
-        build_settings_array RubyRedtail::Query.run("settings/mcl", @api_hash, "GET")
+        build_settings_array RubyRedtail::Query.new(@api_hash, @config).get("settings/mcl")
       end
     
       # Salutation List Fetch
       # returns a list of Salutations with the corresponding Salutation Code
       def salutations
-        build_settings_array RubyRedtail::Query.run("settings/salutations", @api_hash, "GET")
+        build_settings_array RubyRedtail::Query.new(@api_hash, @config).get("settings/salutations")
       end
     
       # User-Defined Fields Fetch
       # returns a list of User-defined fields with the corresponding UDF Code.
       def udf
-        build_settings_array RubyRedtail::Query.run("settings/udf", @api_hash, "GET")
+        build_settings_array RubyRedtail::Query.new(@api_hash, @config).get("settings/udf")
       end
     
       # Tag Groups Fetch
       # returns a list of Tag Groups for a user's Database.
       def taggroups
-        build_settings_array RubyRedtail::Query.run("settings/taggroups", @api_hash, "GET")
+        build_settings_array RubyRedtail::Query.new(@api_hash, @config).get("settings/taggroups")
       end
 
       # Contact Status List Fetch
@@ -43,7 +44,7 @@ module RubyRedtail
       # optional Parameter: {deleted}*
       # {0} shows current records, {1} shows deleted records
       def csl(deleted=false)
-        build_settings_array RubyRedtail::Query.run("settings/csl?deleted=#{deleted ? 1 : 0}", @api_hash, "GET")
+        build_settings_array RubyRedtail::Query.new(@api_hash, @config).get("settings/csl?deleted=#{deleted ? 1 : 0}")
       end
 
       # Contact Category List Fetch
@@ -51,7 +52,7 @@ module RubyRedtail
       # optional Parameter: {deleted}*
       # {0} shows current records, {1} shows deleted records
       def mccl(deleted=false)
-        build_settings_array RubyRedtail::Query.run("settings/mccl?deleted=#{deleted ? 1 : 0}", @api_hash, "GET")
+        build_settings_array RubyRedtail::Query.new(@api_hash, @config).get("settings/mccl?deleted=#{deleted ? 1 : 0}")
       end
 
       # Contact Source List Fetch
@@ -59,7 +60,7 @@ module RubyRedtail
       # optional Parameter: {deleted}*
       # {0} shows current records, {1} shows deleted records
       def mcsl(deleted=false)
-        build_settings_array RubyRedtail::Query.run("settings/mcsl?deleted=#{deleted ? 1 : 0}", @api_hash, "GET")
+        build_settings_array RubyRedtail::Query.new(@api_hash, @config).get("settings/mcsl?deleted=#{deleted ? 1 : 0}")
       end
 
       # Servicing Advisor List Fetch
@@ -67,7 +68,7 @@ module RubyRedtail
       # optional Parameter: {deleted}*
       # {0} shows current records, {1} shows deleted records
       def sal(deleted=false)
-        build_settings_array RubyRedtail::Query.run("settings/sal?deleted=#{deleted ? 1 : 0}", @api_hash, "GET")
+        build_settings_array RubyRedtail::Query.new(@api_hash, @config).get("settings/sal?deleted=#{deleted ? 1 : 0}")
       end
 
       # Writing Advisor List Fetch
@@ -75,7 +76,7 @@ module RubyRedtail
       # optional Parameter: {deleted}*
       # {0} shows current records, {1} shows deleted records
       def wal(deleted=false)
-        build_settings_array RubyRedtail::Query.run("settings/wal?deleted=#{deleted ? 1 : 0}", @api_hash, "GET")
+        build_settings_array RubyRedtail::Query.new(@api_hash, @config).get("settings/wal?deleted=#{deleted ? 1 : 0}")
       end
       
       protected
