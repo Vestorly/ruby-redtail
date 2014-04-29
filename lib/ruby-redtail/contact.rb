@@ -52,7 +52,7 @@ module RubyRedtail
   
     # Delete Contact
     def delete
-      RubyRedtail::Query.new(self.api_hash, @config).delete("contacts/#{self.contact_id}")['Status'] == 0
+      RubyRedtail::Query.new(self.api_hash, @config).post("contacts/#{self.contact_id}")['Status'] == 0
     end
 
     # Master Fetch Contact
