@@ -4,8 +4,8 @@ module RubyRedtail
   class User
     class Contacts
 
-      CONTACT_SEARCH_FIELDS = ['LastUpdate','Name','RecAdd','PhoneNumber','Tag_Group','FirstName','LastName','FamilyName','FamilyHead','ClientStatus','ContactType','ClientSource','TaxId']
-      CONTACT_SEARCH_OPERANDS = ['=','>','<','!=','Like','BeginsWith','IsEmpty']
+      CONTACT_SEARCH_FIELDS = ['LastUpdate','Name','RecAdd','PhoneNumber','TagGroup','FirstName','LastName','FamilyName','FamilyHead','ClientStatus','ContactType','ClientSource','City','State','Zip','Employer','TaxId']
+      CONTACT_SEARCH_OPERANDS = ['Equals','GreaterThan','LessThan','NotEqualTo','Like','BeginsWith','IsEmpty']
 
       def initialize(api_hash, config)
         @api_hash = api_hash
@@ -30,28 +30,35 @@ module RubyRedtail
       def search (query, page = 1)
         body = Array.new(query.length) { {} }
         query.each_with_index do |expr, i|
-          body[i]["Field"] = CONTACT_SEARCH_FIELDS.index expr[0]
+          if expr[0] == 'TaxId'
+            body[i]["Field"] = 73
+          else
+            body[i]["Field"] = CONTACT_SEARCH_FIELDS.index expr[0]
+          end
           body[i]["Operand"] = CONTACT_SEARCH_OPERANDS.index expr[1]
           body[i]["Value"] = expr[2]
         end
-        build_contacts_array RubyRedtail::Query.new(@api_hash, @config).post("contacts/search?page=#{page}", body)
+        result = RubyRedtail::Query.new(@api_hash, @config).post("contacts/search?page=#{page}", body)
+        build_contacts_array( result['Contacts'] )
       end
-      
-      # Create New Contact
-      def create (params)
-        update(0, params)
+
+      def get_individuals(page = 1)
+        result = RubyRedtail::Query.new(@api_hash, @config).get("contacts?page#{page}&type=I")
+        build_contacts_array( result['Detail'] )
       end
-      
+
       protected
       
-      def build_contact contact_hash
-        RubyRedtail::Contact.new(contact_hash, @api_hash, @config)
+      def build_contact(raw_contact)
+        RubyRedtail::Contact.new(raw_contact, @api_hash, @config)
       end
 
-      def build_contacts_array contact_hashes
-        contact_hashes.collect { |contact| self.build_contact contact }
+      def build_contacts_array(raw_contacts)
+        if raw_contacts && raw_contacts.count > 0
+          return raw_contacts.collect { |contact| build_contact(contact) }
+        end
+        []
       end
-
 
     end
   end
