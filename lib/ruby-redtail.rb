@@ -10,14 +10,14 @@ require 'core_extensions/string'
 module RubyRedtail
   class << self
     attr_accessor :config
-  end
 
-  def self.configure
-    self.config ||= Configuration.new
-    yield config
-    raise RubyRedtail::InvalidURIError if (config.api_uri =~ URI::regexp).nil?
-    raise RubyRedtail::AccessKeyError if (config.api_key.empty? || config.secret_key.empty?)
-    config.api_uri << '/' unless config.api_uri[-1, 1] == '/'
+    def configure
+      self.config ||= Configuration.new
+      yield config
+      raise RubyRedtail::InvalidURIError if (config.api_uri =~ URI::regexp).nil?
+      raise RubyRedtail::AccessKeyError if (config.api_key.empty? || config.secret_key.empty?)
+      config.api_uri << '/' unless config.api_uri[-1, 1] == '/'
+    end
   end
 
   class Configuration
@@ -52,10 +52,16 @@ module RubyRedtail
       @user.authentication if @user
     end
 
-    def contact(contact_id)
-      return if @user.nil?
+    def settings
+       RubyRedtail::User::Settings.new( @user.api_hash, @config )
+    end
 
-      RubyRedtail::Contact.new( { 'ContactID' => contact_id }, @user.api_hash, @config )
+    def contacts
+      RubyRedtail::User::Contacts.new( @user.api_hash, @config )
+    end
+
+    def contact(contact_id)
+      RubyRedtail::Contact.new( { 'ClientID' => contact_id }, @user.api_hash, @config )
     end
 
     def user
