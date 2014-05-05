@@ -60,8 +60,7 @@ module RubyRedtail
 
     # Fetch email address
     def email_address
-      addresses = internet_addresses
-      addresses.collect { |address| address['Address'] if address['TypeID'] == 1 }
+      internet_addresses.collect { |address| address['Address'] if address['TypeID'] == 1 }
     end
 
     # Update email address

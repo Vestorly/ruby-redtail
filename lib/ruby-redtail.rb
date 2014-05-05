@@ -64,8 +64,8 @@ module RubyRedtail
       RubyRedtail::Contact.new( { 'ClientID' => contact_id }, @user.api_hash, @config )
     end
 
-    def user
-      @user
+    def sso
+      RubyRedtail::Sso.new( RubyRedtail::Query.new(@user.api_hash, @config).get("sso") )
     end
   end
 end

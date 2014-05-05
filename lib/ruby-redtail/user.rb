@@ -52,7 +52,7 @@ module RubyRedtail
       sso.return_url
     end
 	  def sso
-      RubyRedtail::Sso.new( RubyRedtail::Query.new(self.api_hash, @config).get("sso", self.api_hash) )
+      RubyRedtail::Sso.new( RubyRedtail::Query.new(self.api_hash, @config).get("sso") )
     end
 
     def contacts
